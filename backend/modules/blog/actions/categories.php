@@ -42,7 +42,6 @@ class BackendBlogCategories extends BackendBaseActionIndex
 
 		// convert the count into a readable and clickable one
 		$this->dataGrid->setColumnFunction(array(__CLASS__, 'setClickableCount'), array('[num_items]', BackendModel::createURLForAction('index') . '&amp;category=[id]'), 'num_items', true);
-
 		// disable paging
 		$this->dataGrid->setPaging(false);
 

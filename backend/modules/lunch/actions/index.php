@@ -8,39 +8,11 @@
  */
 
 /**
- * This is the index-action (default), it will display the overview of blog posts
- *
- * @author Davy Hellemans <davy.hellemans@netlash.com>
- * @author Dave Lens <dave.lens@netlash.com>
- * @author Tijs Verkoyen <tijs@sumocoders.com>
- * @author Matthias Mullie <matthias@mullie.eu>
+ * This is the index-action (default), it will display the overview orders
  */
-class BackendBlogIndex extends BackendBaseActionIndex
+
+class BackendLunchIndex extends BackendBaseActionIndex
 {
-	/**
-	 * The category where is filtered on
-	 *
-	 * @var	array
-	 */
-	private $category;
-
-	/**
-	 * The id of the category where is filtered on
-	 *
-	 * @var	int
-	 */
-	private $categoryId;
-
-	/**
-	 * DataGrids
-	 *
-	 * @var	SpoonDataGrid
-	 */
-	private $dgDrafts, $dgPosts, $dgRecent;
-
-	/**
-	 * Execute the action
-	 */
 	public function execute()
 	{
 		parent::execute();
@@ -69,7 +41,6 @@ class BackendBlogIndex extends BackendBaseActionIndex
 		$this->parse();
 		$this->display();
 	}
-
 	/**
 	 * Loads the datagrid with all the posts
 	 */
@@ -79,7 +50,7 @@ class BackendBlogIndex extends BackendBaseActionIndex
 		if($this->categoryId != null)
 		{
 			// create datagrid
-			$this->dgPosts = new BackendDataGridDB(BackendBlogModel::QRY_DATAGRID_BROWSE_FOR_CATEGORY, array($this->categoryId, 'active', BL::getWorkingLanguage()));
+			$this->dgPosts = new BackendDataGridDB(BackendLunchModel::QRY_DATAGRID_BROWSE_FOR_LUNCH_MENU_ITEMS, array($this->categoryId, BL::getWorkingLanguage()));
 
 			// set the URL
 			$this->dgPosts->setURL('&amp;category=' . $this->categoryId, true);
@@ -88,11 +59,11 @@ class BackendBlogIndex extends BackendBaseActionIndex
 		else
 		{
 			// create datagrid
-			$this->dgPosts = new BackendDataGridDB(BackendBlogModel::QRY_DATAGRID_BROWSE, array('active', BL::getWorkingLanguage()));
+			$this->dgPosts = new BackendDataGridDB(BackendLunchModel::QRY_DATAGRID_BROWSE_FOR_CATEGORY, array(BL::getWorkingLanguage()));
 		}
 
 		// set headers
-		$this->dgPosts->setHeaderLabels(array('user_id' => SpoonFilter::ucfirst(BL::lbl('Author')), 'publish_on' => SpoonFilter::ucfirst(BL::lbl('PublishedOn'))));
+		/*$this->dgPosts->setHeaderLabels(array('user_id' => SpoonFilter::ucfirst(BL::lbl('Author')), 'publish_on' => SpoonFilter::ucfirst(BL::lbl('PublishedOn'))));
 
 		// hide columns
 		$this->dgPosts->setColumnsHidden(array('revision_id'));
@@ -116,7 +87,7 @@ class BackendBlogIndex extends BackendBaseActionIndex
 
 			// add edit column
 			$this->dgPosts->addColumn('edit', null, BL::lbl('Edit'), BackendModel::createURLForAction('edit') . '&amp;id=[id]&amp;category=' . $this->categoryId, BL::lbl('Edit'));
-		}
+		}*/
 	}
 
 	/**
