@@ -220,6 +220,7 @@ class BackendBlogIndex extends BackendBaseActionIndex
 	 */
 	private function loadDataGrids()
 	{
+
 		$this->loadDataGridAllPosts();
 		$this->loadDataGridDrafts();
 
