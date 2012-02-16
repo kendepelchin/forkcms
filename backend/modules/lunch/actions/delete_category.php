@@ -29,17 +29,17 @@ class BackendLunchDeleteCategory extends BackendBaseActionDelete
 				parent::execute();
 
 				// delete item
-				BackendBlogModel::deleteCategory($this->id);
+				BackendLunchModel::deleteCategory($this->id);
 
 				// trigger event
-				BackendModel::triggerEvent($this->getModule(), 'after_delete_category', array('id' => $this->id));
+				//BackendModel::triggerEvent($this->getModule(), 'after_delete_category', array('id' => $this->id));
 
 				// category was deleted, so redirect
-				$this->redirect(BackendModel::createURLForAction('categories') . '&report=deleted-category&var=' . urlencode($this->record['title']));
+				$this->redirect(BackendModel::createURLForAction('categories') . '&report=deleted-category&var=' . urlencode($this->record['name']));
 			}
 
 			// delete category not allowed
-			else $this->redirect(BackendModel::createURLForAction('categories') . '&error=delete-category-not-allowed&var=' . urlencode($this->record['title']));
+			else $this->redirect(BackendModel::createURLForAction('categories') . '&error=delete-category-not-allowed&var=' . urlencode($this->record['name']));
 		}
 
 		// something went wrong

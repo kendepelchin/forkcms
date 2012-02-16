@@ -22,8 +22,13 @@ class BackendLunchModel
 		 GROUP BY i.id';
 
 	const QRY_DATAGRID_BROWSE_FOR_LUNCH_MENU_ITEMS =
-	'SELECT i.id, i.price, i.name FROM lunch_menu_item AS i
+	'SELECT i.id, CONCAT("€ ", i.price) as price, i.name FROM lunch_menu_item AS i
 		WHERE i.lunch_category_id = ? AND i.language = ?
+	';
+
+	const QRY_DATAGRID_BROWSE =
+	'SELECT i.id, CONCAT("€ ", i.price) as price, i.name FROM lunch_menu_item AS i
+	WHERE i.language = ?
 	';
 
 	/**
@@ -35,8 +40,18 @@ class BackendLunchModel
 	public static function existsCategory($id)
 	{
 		return (bool) BackendModel::getDB()->getVar(
-				'SELECT COUNT(id)
+				'SELECT COUNT(i.id)
 				FROM lunch_category AS i
+				WHERE i.id = ? AND i.language = ?',
+				array((int) $id, BL::getWorkingLanguage())
+		);
+	}
+
+	public static function existsMenuItem($id)
+	{
+		return (bool) BackendModel::getDB()->getVar(
+				'SELECT COUNT(i.id)
+				FROM lunch_menu_item AS i
 				WHERE i.id = ? AND i.language = ?',
 				array((int) $id, BL::getWorkingLanguage())
 		);
@@ -79,7 +94,13 @@ class BackendLunchModel
 		$db = BackendModel::getDB(true);
 		$updated = $db->update('lunch_category', $item,'id = ?',$item['id']);
 
-		// TODO: meta aanpassen
+		return $updated;
+	}
+
+	public static function updateMenuItem(array $item)
+	{
+		$db = BackendModel::getDB(true);
+		$updated = $db->update('lunch_menu_item', $item, 'id = ?', $item['id']);
 
 		return $updated;
 	}
@@ -93,19 +114,81 @@ class BackendLunchModel
 
 	public static function categoryAlreadyExists($cat)
 	{
-		/*$db = BackendModel::getDB();
-		$result = (bool)$db->getVar(
-			'SELECT count(i.id)
-			FROM lunch_category AS i
-			WHERE i.name = ? AND i.language = ?',
-			array((string) $cat, BL::getWorkingLanguage()));
-
-		echo $result;*/
 		return (bool) BackendModel::getDB()->getVar(
 			'SELECT count(i.id)
 			FROM lunch_category AS i
 			WHERE i.name = ? AND i.language = ?',
 			array((string) $cat, BL::getWorkingLanguage())
 		);
+	}
+
+	public static function itemAlreadyExists($item,$cat)
+	{
+		return (bool) BackendModel::getDB()->getVar(
+				'SELECT count(i.id)
+				FROM lunch_menu_item AS i
+				WHERE i.name = ? AND i.lunch_category_id = ? AND i.language = ?',
+				array((string) $item,(int)$cat, BL::getWorkingLanguage())
+		);
+	}
+
+	public static function getItem($id)
+	{
+		return (array)BackendModel::getDB()->getRecord(
+				'SELECT i.name, i.id, i.price, i.lunch_category_id AS category
+				FROM lunch_menu_item AS i
+				WHERE i.id = ? AND i.language = ?',
+				array((int) $id, BL::getWorkingLanguage()));
+	}
+
+	/**
+	 * Deletes a category
+	 *
+	 * @param int $id The id of the category to delete.
+	 */
+	public static function deleteCategory($id)
+	{
+		$id = (int) $id;
+		$db = BackendModel::getDB(true);
+
+		// get item
+		$item = self::getCategory($id);
+
+		if(!empty($item))
+		{
+			// delete category
+			$db->delete('lunch_category', 'id = ?', array($id));
+		}
+	}
+
+	public static function deleteMenuItem($id)
+	{
+		$id = (int) $id;
+		$db = BackendModel::getDB(true);
+
+		// get item
+		$item = self::getItem($id);
+
+		if(!empty($item))
+		{
+			// delete category
+			$db->delete('lunch_menu_item', 'id = ?', array($id));
+		}
+	}
+
+	public static function getCategories()
+	{
+		return (array)BackendModel::getDB()->getPairs(
+				'select i.id,CONCAT(i.name, " (",COUNT(p.lunch_category_id),")") AS NAME
+					FROM lunch_category AS i
+					LEFT OUTER JOIN lunch_menu_item AS p ON i.id = p.lunch_category_id AND p.language = i.language
+					WHERE i.language = ? GROUP BY i.id', array(BL::getWorkingLanguage())
+				);
+	}
+
+	public static function addMenuItem($item)
+	{
+		$db = BackendModel::getDB(true);
+		return (int)$db->insert('lunch_menu_item',$item);
 	}
 }

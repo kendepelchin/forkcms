@@ -5,23 +5,21 @@
 	<h2>
 		{$lblLunch|ucfirst}:
 
-		{option:!filterCategory}{$lblOrders}{/option:!filterCategory}
-		{option:filterCategory}{$msgArticlesFor|sprintf:{$filterCategory.title}}{/option:filterCategory}
+		{option:!filterCategory}{$lblMenuItems}{/option:!filterCategory}
+		{option:filterCategory}{$msgMenuItemsFor|sprintf:{$filterCategory.name}}{/option:filterCategory}
 	</h2>
 
-	{option:showLunchAdd}
 	<div class="buttonHolderRight">
-		{option:filterCategory}<a href="{$var|geturl:'add':null:'&category={$filterCategory.id}'}" class="button icon iconAdd" title="{$lblAdd|ucfirst}">{/option:filterCategory}
-		{option:!filterCategory}<a href="{$var|geturl:'add'}" class="button icon iconAdd" title="{$lblAdd|ucfirst}">{/option:!filterCategory}
+		{option:filterCategory}<a href="{$var|geturl:'add_menu_item':null:'&category={$filterCategory.id}'}" class="button icon iconAdd" title="{$lblAdd|ucfirst}">{/option:filterCategory}
+		{option:!filterCategory}<a href="{$var|geturl:'add_menu_item'}" class="button icon iconAdd" title="{$lblAdd|ucfirst}">{/option:!filterCategory}
 			<span>{$lblAdd|ucfirst}</span>
 		</a>
 	</div>
-	{/option:showLunchAdd}
 </div>
 
 {form:filter}
 	<p class="oneLiner">
-		<label for="category">{$msgShowOnlyItemsInCategory}</label>
+		<label for="category">{$msgShowOnlyItemsInCategoryLunch}</label>
 		&nbsp;{$ddmCategory} {$ddmCategoryError}
 	</p>
 {/form:filter}
@@ -47,7 +45,7 @@
 {option:dgPosts}
 	<div class="dataGridHolder">
 		<div class="tableHeading">
-			<h3>{$lblPublishedArticles|ucfirst}</h3>
+			<h3>{$lblItemsAvailable|ucfirst}</h3>
 		</div>
 		{$dgPosts}
 	</div>

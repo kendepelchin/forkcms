@@ -36,28 +36,21 @@ class BackendLunchAddCategory extends BackendBaseActionAdd
 			// cleanup the submitted fields, ignore fields that were added by hackers
 			$this->frm->cleanupFields();
 
+			$cat_name = $this->frm->getField('name')->getValue();
 			// validate fields
-			$this->frm->getField('name')->isFilled(BL::err('TitleIsRequired'));
-
+			if (BackendLunchModel::categoryAlreadyExists($cat_name)) {
+				$this->frm->getField('name')->addError('This category already exists');
+			} else {
+				$this->frm->getField('name')->isFilled(BL::err('TitleIsRequired'));
+			}
 			if($this->frm->isCorrect())
 			{
 				$item['name'] = $this->frm->getField('name')->getValue();
 				$item['language'] = BL::getWorkingLanguage();
 
-				//echo BackendLunchModel::categoryAlreadyExists($item['name']);
-				//echo BackendLunchModel::categoryAlreadyExists($item['name']) == 1 ? 'true' : 'false';
-				//echo 'zit er al in ';
-				// check if category already exists=
-				/*if (BackendLunchModel::categoryAlreadyExists($item['name'])) {
-					$this->frm->getField('name')->isSubmitted(BL::err('CategoryAlreadyExists'));
-				}*/
-				// insert the item
-				/*else*/ $item['id'] = BackendLunchModel::insertCategory($item);
+				$item['id'] = BackendLunchModel::insertCategory($item);
 
-				//CategoryAlreadyExists
-				// redirect
 				$this->redirect(BackendModel::createURLForAction('categories') . '&report=added-category&var=' . urlencode($item['name']) . '&highlight=row-' . $item['id']);
-
 			}
 		}
 	}
