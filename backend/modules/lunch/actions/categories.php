@@ -9,6 +9,7 @@
 
 /**
  * This is the index-action (default), it will display the overview of lunch categories
+ * @author ken.depelchin@netlash.com
  */
 
 class BackendLunchCategories extends BackendBaseActionIndex
@@ -32,7 +33,6 @@ class BackendLunchCategories extends BackendBaseActionIndex
 		$this->dataGrid->setSortingColumns(array('name', 'num_items'), 'name');
 
 		// convert the count into a readable and clickable one
-		// TODO: change URL to category
 		$this->dataGrid->setColumnFunction(array(__CLASS__, 'setClickableCount'), array('[num_items]', BackendModel::createURLForAction('index') . '&amp;category=[id]'), 'num_items', true);
 
 		// disable paging
@@ -45,7 +45,7 @@ class BackendLunchCategories extends BackendBaseActionIndex
 		if(BackendAuthentication::isAllowedAction('edit_category'))
 		{
 			// set column URLs
-			$this->dataGrid->setColumnURL('name', BackendModel::createURLForAction('edit_category') . '&amp;id=[id]');
+			$this->dataGrid->setColumnURL('name', BackendModel::createURLForAction('index') . '&amp;id=[id]');
 
 			// add column
 			$this->dataGrid->addColumn('edit', null, BL::lbl('Edit'), BackendModel::createURLForAction('edit_category') . '&amp;id=[id]', BL::lbl('Edit'));

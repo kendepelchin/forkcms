@@ -2,13 +2,14 @@
 
 /*
  * This file is part of Fork CMS.
-*
-* For the full copyright and license information, please view the license
-* file that was distributed with this source code.
-*/
+ *
+ * For the full copyright and license information, please view the license
+ * file that was distributed with this source code.
+ */
 
 /**
  * This is the add category action, it will display a form to add a category.
+ * @author ken.depelchin@netlash.com
  */
 
 class BackendLunchAddCategory extends BackendBaseActionAdd
@@ -25,7 +26,10 @@ class BackendLunchAddCategory extends BackendBaseActionAdd
 	protected function loadForm()
 	{
 		$this->frm = new BackendForm('addCategory');
-		$this->frm->addText('name', null,50,'inputText title', 'inputTextError title',false);
+		$this->frm->addText('name', null,50,'inputText title', 'inputTextError title', false);
+
+		// meta
+		$this->meta = new BackendMeta($this->frm, null, 'title', true);
 	}
 
 	// action (plonk) => doAdd

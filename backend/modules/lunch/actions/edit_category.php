@@ -9,7 +9,9 @@
 
 /**
  * This is the edit category action, it will display a form to edit an existing category.
+ * @author ken.depelchin@netlash.com
  */
+
 class BackendLunchEditCategory extends BackendBaseActionEdit
 {
 	/**
@@ -54,6 +56,9 @@ class BackendLunchEditCategory extends BackendBaseActionEdit
 
 		// create elements
 		$this->frm->addText('name', $this->record['name'], null, 'inputText name', 'inputTextError name');
+
+		// meta
+		$this->meta = new BackendMeta($this->frm, null, 'title', true);
 	}
 
 	/**
@@ -82,15 +87,11 @@ class BackendLunchEditCategory extends BackendBaseActionEdit
 			// validate fields
 			$this->frm->getField('name')->isFilled(BL::err('TitleIsRequired'));
 
-			// validate meta
-			//$this->meta->validate();
-
 			if($this->frm->isCorrect())
 			{
 				// build item
 				$item['id'] = $this->id;
 				$item['name'] = ucfirst($this->frm->getField('name')->getValue());
-				//$item['meta_id'] = $this->meta->save(true);
 
 				// update the item
 				BackendLunchModel::updateCategory($item);

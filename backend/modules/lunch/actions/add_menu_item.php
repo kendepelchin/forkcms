@@ -1,4 +1,17 @@
 <?php
+
+/*
+ * This file is part of Fork CMS.
+*
+* For the full copyright and license information, please view the license
+* file that was distributed with this source code.
+*/
+
+/**
+ * This is the add menu item action, it will display a form to add a menu item.
+ * @author ken.depelchin@netlash.com
+ */
+
 class BackendLunchAddMenuItem extends BackendBaseActionAdd
 {
 	public function execute()
@@ -32,11 +45,14 @@ class BackendLunchAddMenuItem extends BackendBaseActionAdd
 	protected function loadForm()
 	{
 		$this->frm = new BackendForm('addMenuItem');
-		$this->frm->addText('name',null,75,'inputText title', 'inputTextError title',false);
-		$this->frm->addText('price',null,75,'inputText title', 'inputTextError title',false);
+		$this->frm->addText('name', null, 75, 'inputText title', 'inputTextError title', false);
+		$this->frm->addText('price', null, 75, 'inputText title', 'inputTextError title', false);
 		$categories = BackendLunchModel::getCategories();
-		$this->frm->addDropdown('category',$categories, $this->categoryId);
+		$this->frm->addDropdown('category', $categories, $this->categoryId);
 		$this->frm->getField('category')->setDefaultElement('');
+
+		// meta
+		$this->meta = new BackendMeta($this->frm, null, 'title', true);
 	}
 
 	private function validateForm()
@@ -48,6 +64,9 @@ class BackendLunchAddMenuItem extends BackendBaseActionAdd
 
 			// price not empty?
 			$this->frm->getField('price')->isFilled(BL::err('FieldIsRequired'));
+
+			// price numeric
+			$this->frm->getField('price')->isFloat(BL::err('PriceNotNumeric'));
 
 			// get the selected category id
 			$cat_id = (int) $this->frm->getField('category')->getValue();

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+	<name>lunch</name>
+	<version>1.0.0</version>
+	<requirements>
+		<minimum_version>1.0.0</minimum_version>
+	</requirements>
+	<description>
+		<![CDATA[
+			Frieten bestellen
+		]]>
+	</description>
+	<authors>
+		<author>
+			<name><![CDATA[Ken Depelchin]]></name>
+		</author>
+	</authors>
+	<events>
+	</events>
+</module>

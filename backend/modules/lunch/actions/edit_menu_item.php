@@ -1,4 +1,17 @@
 <?php
+
+/*
+ * This file is part of Fork CMS.
+*
+* For the full copyright and license information, please view the license
+* file that was distributed with this source code.
+*/
+
+/**
+ * This is the edit menu item action, it will display a form to edit an existing menu item.
+ * @author ken.depelchin@netlash.com
+ */
+
 class BackendLunchEditMenuItem extends BackendBaseActionEdit
 {
 	public function execute()
@@ -36,11 +49,14 @@ class BackendLunchEditMenuItem extends BackendBaseActionEdit
 	protected function loadForm()
 	{
 		$this->frm = new BackendForm('editMenuItem');
-		$this->frm->addText('name',$this->record['name'],75,'inputText title', 'inputTextError title',false);
-		$this->frm->addText('price',$this->record['price'],75,'inputText title', 'inputTextError title',false);
+		$this->frm->addText('name', $this->record['name'], 75, 'inputText title', 'inputTextError title', false);
+		$this->frm->addText('price', $this->record['price'], 75, 'inputText title', 'inputTextError title', false);
 		$categories = BackendLunchModel::getCategories();
-		$this->frm->addDropdown('category',$categories, $this->record['category']);
+		$this->frm->addDropdown('category', $categories, $this->record['category']);
 		$this->frm->getField('category')->setDefaultElement('');
+
+		// meta
+		$this->meta = new BackendMeta($this->frm, null, 'title', true);
 	}
 
 	private function validateForm()
@@ -52,6 +68,9 @@ class BackendLunchEditMenuItem extends BackendBaseActionEdit
 
 			// price not empty?
 			$this->frm->getField('price')->isFilled(BL::err('FieldIsRequired'));
+
+			// price float
+			$this->frm->getField('price')->isFloat(BL::err('PriceNotNumeric'));
 
 			// get the selected category id
 			$catId = (int) $this->frm->getField('category')->getValue();
@@ -79,7 +98,7 @@ class BackendLunchEditMenuItem extends BackendBaseActionEdit
 				BackendLunchModel::updateMenuItem($item);
 
 				// redirect
-				$this->redirect(BackendModel::createURLForAction('index') . '&report=edited-category&var=' . urlencode($item['name']) . '&highlight=row-' . $item['id']);
+				$this->redirect(BackendModel::createURLForAction('index') . '&report=edited-menu-item&var=' . urlencode($item['name']) . '&highlight=row-' . $item['id']);
 			}
 		}
 	}

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of Fork CMS.
 *
@@ -7,7 +8,8 @@
 */
 
 /**
- * This is the add category action, it will display a form to add a category.
+ * This is the delete category action
+ * @author ken.depelchin@netlash.com
  */
 
 class BackendLunchDeleteCategory extends BackendBaseActionDelete
@@ -30,9 +32,6 @@ class BackendLunchDeleteCategory extends BackendBaseActionDelete
 
 				// delete item
 				BackendLunchModel::deleteCategory($this->id);
-
-				// trigger event
-				//BackendModel::triggerEvent($this->getModule(), 'after_delete_category', array('id' => $this->id));
 
 				// category was deleted, so redirect
 				$this->redirect(BackendModel::createURLForAction('categories') . '&report=deleted-category&var=' . urlencode($this->record['name']));

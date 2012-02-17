@@ -9,6 +9,7 @@
 
 /**
  * This is the index-action (default), it will display the overview orders
+ * @author ken.depelchin@netlash.com
  */
 
 class BackendLunchIndex extends BackendBaseActionIndex
@@ -20,13 +21,14 @@ class BackendLunchIndex extends BackendBaseActionIndex
 	 * @var	SpoonDataGrid
 	 */
 
+	private $category;
+
 
 	public function execute()
 	{
 		parent::execute();
 
 		// set category id
-		// cat in get value?
 		$this->categoryId = SpoonFilter::getGetValue('category', null, null, 'int');
 		if($this->categoryId == 0) $this->categoryId = null;
 		else
@@ -94,6 +96,8 @@ class BackendLunchIndex extends BackendBaseActionIndex
 			// create element
 			$frm->addDropdown('category', $categories, $this->categoryId);
 			$frm->getField('category')->setDefaultElement('');
+
+			//echo $frm->getField('category')->getValue();
 
 			// parse the form
 			$frm->parse($this->tpl);

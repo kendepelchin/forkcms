@@ -24,24 +24,6 @@
 	</p>
 {/form:filter}
 
-{option:dgRecent}
-	<div class="dataGridHolder">
-		<div class="tableHeading">
-			<h3>{$lblRecentlyEdited|ucfirst}</h3>
-		</div>
-		{$dgRecent}
-	</div>
-{/option:dgRecent}
-
-{option:dgDrafts}
-	<div class="dataGridHolder">
-		<div class="tableHeading">
-			<h3>{$lblDrafts|ucfirst}</h3>
-		</div>
-		{$dgDrafts}
-	</div>
-{/option:dgDrafts}
-
 {option:dgPosts}
 	<div class="dataGridHolder">
 		<div class="tableHeading">
