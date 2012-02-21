@@ -22,17 +22,24 @@ class BackendLunchModel
 	 GROUP BY i.id';
 
 	const QRY_DATAGRID_BROWSE_FOR_LUNCH_MENU_ITEMS =
-	'SELECT i.name, i.id, CONCAT("€ ", i.price) as price FROM lunch_menu_item AS i
-	 WHERE i.lunch_category_id = ? AND i.language = ? ORDER BY i.id DESC';
+	'SELECT i.name, i.id, CONCAT("€ ", i.price) as price
+	 FROM lunch_menu_item AS i
+	 WHERE i.lunch_category_id = ? AND i.language = ?
+	 ORDER BY i.id DESC';
 
 	const QRY_DATAGRID_BROWSE =
-	'SELECT i.name,i.id, CONCAT("€ ", i.price) as price FROM lunch_menu_item AS i
-	 WHERE i.language = ? ORDER BY i.id DESC';
+	'SELECT i.name,i.id, CONCAT("€ ", i.price) as price
+	 FROM lunch_menu_item AS i
+	 WHERE i.language = ?
+	 ORDER BY i.id DESC';
 
 	const QRY_DATAGRID_BROWSE_ORDERS_FOR_DATE =
-	'SELECT i.name, SUM(i.count * p.price) AS subtotal FROM lunch_order AS i
+	'SELECT i.name, SUM(i.count * p.price) AS subtotal
+	 FROM lunch_order AS i
 	 LEFT OUTER JOIN lunch_menu_item AS p ON i.lunch_menu_item_id = p.id AND p.language = i.language
-	 WHERE i.time BETWEEN DATE_SUB(?,INTERVAL 7 DAY) AND ? AND i.language = ? GROUP BY i.name ORDER BY i.time DESC';
+	 WHERE i.time BETWEEN DATE_SUB(?,INTERVAL 7 DAY) AND ? AND i.language = ?
+	 GROUP BY i.name
+	 ORDER BY i.time DESC';
 
 	/**
 	 * Checks if a category exists
@@ -191,7 +198,8 @@ class BackendLunchModel
 			'SELECT i.id,CONCAT(i.name, " (",COUNT(p.lunch_category_id),")") AS name
 			 FROM lunch_category AS i
 			 LEFT OUTER JOIN lunch_menu_item AS p ON i.id = p.lunch_category_id AND p.language = i.language
-			 WHERE i.language = ? GROUP BY i.id', array(BL::getWorkingLanguage())
+			 WHERE i.language = ?
+			 GROUP BY i.id', array(BL::getWorkingLanguage())
 			);
 	}
 
@@ -204,9 +212,11 @@ class BackendLunchModel
 	public static function calculateTotal($timestamp)
 	{
 		return (float)BackendModel::getDB()->getVar(
-			'SELECT SUM(i.count * p.price) AS subtotal FROM lunch_order AS i
+			'SELECT SUM(i.count * p.price) AS subtotal
+			 FROM lunch_order AS i
 			 LEFT OUTER JOIN lunch_menu_item AS p ON i.lunch_menu_item_id = p.id AND p.language = i.language
-			 WHERE i.time BETWEEN DATE_SUB(?,INTERVAL 7 DAY) AND ? AND i.language = ? ORDER BY i.time DESC'
+			 WHERE i.time BETWEEN DATE_SUB(?,INTERVAL 7 DAY) AND ? AND i.language = ?
+			 ORDER BY i.time DESC'
 			,array($timestamp,$timestamp,BL::getWorkingLanguage()));
 	}
 }
