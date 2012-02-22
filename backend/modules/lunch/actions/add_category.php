@@ -47,6 +47,7 @@ class BackendLunchAddCategory extends BackendBaseActionAdd
 			} else {
 				$this->frm->getField('name')->isFilled(BL::err('TitleIsRequired'));
 			}
+
 			if($this->frm->isCorrect())
 			{
 				$item['name'] = $this->frm->getField('name')->getValue();

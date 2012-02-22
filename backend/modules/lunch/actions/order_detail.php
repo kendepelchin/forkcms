@@ -45,7 +45,7 @@ class BackendLunchOrderDetail extends BackendBaseActionIndex
 	private function loadDataGrid()
 	{
 		// TODO: change query to use date
-		$this->dataGrid = new BackendDataGridDB(BackendLunchModel::QRY_DATAGRID_BROWSE_ORDERS_FOR_DATE, array(date('Y-m-d H:00:00', $this->timestamp),date('Y-m-d H:00:00', $this->timestamp),BL::getWorkingLanguage()));
+		$this->dataGrid = new BackendDataGridDB(BackendLunchModel::QRY_DATAGRID_BROWSE_ORDERS_FOR_DATE, array(SpoonDate::getDate('Y-m-d H:00:00', $this->timestamp),SpoonDate::getDate('Y-m-d H:00:00', $this->timestamp),BL::getWorkingLanguage()));
 
 		$this->dataGrid->setColumnFunction(array(__CLASS__, 'roundSubtotal'), array('[subtotal]'), 'subtotal', true);
 	}

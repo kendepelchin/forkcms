@@ -1,12 +1,49 @@
 <?php
+/*
+ * This file is part of Fork CMS.
+*
+* For the full copyright and license information, please view the license
+* file that was distributed with this source code.
+*/
+
+/**
+ * This is the index-action (default), it will display the overview of all items
+ * @author ken.depelchin@netlash.com
+ */
+
 class FrontendLunchIndex extends FrontendBaseBlock
 {
 	private $order = array();
 
 	public function execute()
 	{
+		if (SpoonDate::getDate('N') != 5) {
+			$this->getSession();
+		}
+
+		elseif(SpoonDate::getDate('N') == 5 && SpoonDate::getDate('H') <= 11)
+		{
+			$this->getSession();
+		}
+
+		else
+		{
+			SpoonSession::destroy();
+
+		}
+
+		parent::execute();
+		$this->loadTemplate();
+		$this->loadData();
+		$this->parse();
+	}
+
+	private function getSession()
+	{
+		// let users order
 		SpoonSession::start();
-		//SpoonSession::destroy();
+
+		$this->tpl->assign('possible',true);
 
 		// get the session or start a new one
 		if (!SpoonSession::exists('frieten'))
@@ -24,6 +61,7 @@ class FrontendLunchIndex extends FrontendBaseBlock
 		{
 			$item = FrontendLunchModel::getMenuItem($this->orderId);
 			$item['count'] = $count;
+			$item['note'] = '';
 			$item['total'] = 0;
 
 			// add the count of an existing menu item
@@ -41,19 +79,16 @@ class FrontendLunchIndex extends FrontendBaseBlock
 			// add the array to the session
 			SpoonSession::set('frieten', $this->order);
 		}
-
-		parent::execute();
-		$this->loadTemplate();
-		$this->loadDataGrid();
-
-		$this->parse();
 	}
 
-	private function loadDataGrid()
+	private function loadData()
 	{
 		//Spoon::dump($this->order);
 		if (sizeof($this->order) != 0) {
 			$this->tpl->assign('items', $this->order);
+
+			$url = FrontendNavigation::getURLForBlock('lunch', 'edit') . '/';
+			$this->tpl->assign('url',$url);
 
 			$total = 0;
 			foreach($this->order as $k) {
@@ -75,32 +110,44 @@ class FrontendLunchIndex extends FrontendBaseBlock
 	}
 
 	private function validateForm() {
+		// @TODO: put name in session and remember it
 		if ($this->frm->isSubmitted())
 		{
 			// cleanup the submitted fields, ignore fields that were added by hackers
 			$this->frm->cleanupFields();
 
-			//$cat_name = $this->frm->getField('name')->getValue();
-			// validate fields
-			/*if (BackendLunchModel::categoryAlreadyExists($cat_name)) {
-				$this->frm->getField('name')->addError('This category already exists');
-			} else {
-				$this->frm->getField('name')->isFilled(BL::err('TitleIsRequired'));
-			}
-			if($this->frm->isCorrect())
+			$name = $this->frm->getField('name')->getValue();
+
+			$this->frm->getField('name')->isFilled(FL::err('AuthorIsRequired'));
+
+			if ($this->frm->isCorrect())
 			{
-				$item['name'] = $this->frm->getField('name')->getValue();
-				$item['language'] = BL::getWorkingLanguage();
+				FrontendLunchModel::addOrder($name, $this->order);
 
-				$item['id'] = BackendLunchModel::insertCategory($item);
+				//order is added, delete the sessionkey
+				SpoonSession::delete('frieten');
 
-				$this->redirect(BackendModel::createURLForAction('categories') . '&report=added-category&var=' . urlencode($item['name']) . '&highlight=row-' . $item['id']);
-			}*/
+				$this->redirect(FrontendNavigation::getURLForBlock('lunch','overview'));
+			}
 		}
 	}
 
 	private function parse()
 	{
-
+		$this->date = SpoonDate::getDate('F jS, Y H:i:s',strtotime('next Friday 11:00:00'));
+		//echo SpoonDate::getDate('F jS, Y H:i:s');
+		//echo $this->date;
+		if (sizeof($this->order) != 0)
+		{
+			if (SpoonDate::getDate('F jS, Y H:i:s') < $this->date)
+			{
+				//parse form
+				$this->frm->parse($this->tpl);
+			}
+			else {
+				// show day is passed
+				// remove the add buttons
+			}
+		}
 	}
 }

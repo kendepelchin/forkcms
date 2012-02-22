@@ -14,14 +14,14 @@
 
 class BackendLunchOrders extends BackendBaseActionIndex
 {
-	private $fridays;
+	private $array;
 
 	public function execute()
 	{
 		parent::execute();
 
 		// GET ALL THE FRIDAYS!
-		$this->getFridays(SpoonDate::getDate('Y'));
+		$this->array = self::getFridays(SpoonDate::getDate('Y'));
 
 		$this->loadDataGrid();
 		$this->parse();
@@ -32,11 +32,13 @@ class BackendLunchOrders extends BackendBaseActionIndex
 	{
 		parent::parse();
 		$this->tpl->assign('dataGrid', ($this->dataGrid->getNumResults() != 0) ? $this->dataGrid->getContent() : false);
+
+		$this->tpl->assign('next', $this->array[0]['friday']);
 	}
 
 	private function loadDataGrid()
 	{
-		$this->dataGrid = new BackendDataGridArray($this->fridays);
+		$this->dataGrid = new BackendDataGridArray($this->array);
 
 		// add column
 		$this->dataGrid->addColumn('View', null, BL::lbl('View'), BackendModel::createURLForAction('order_detail') . '&amp;id=[fridayTimeStamp]', BL::lbl('View'));
@@ -49,10 +51,10 @@ class BackendLunchOrders extends BackendBaseActionIndex
 		$this->dataGrid->setColumnHidden('fridayTimeStamp');
 	}
 
-	private function getFridays($year)
+	public static function getFridays($year)
 	{
 		// define an array for our fridays
-		$this->fridays = array();
+		$fridays = array();
 
 		// get start date
 	    $startDate = new DateTime($year . '-01-01 Friday 11:00');
@@ -69,15 +71,14 @@ class BackendLunchOrders extends BackendBaseActionIndex
 	    foreach(new DatePeriod($startDate, $int, $endDate) as $d) {
 			$dateTimeToCheck= new DateTime($d->format('F j, Y'));
 
-			if ($currentDate > $dateTimeToCheck)
-			{
-				continue;
-			}
+			if ($currentDate > $dateTimeToCheck) continue;
 
-	        $this->fridays[] = array(
+	        $fridays[] = array(
         		'fridayTimeStamp' => strtotime((string)$d->format('F j, Y h:00:00')),
         		'friday' => $d->format('jS F Y')
         	);
 	    }
+
+	    return $fridays;
 	}
 }

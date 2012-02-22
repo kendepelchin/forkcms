@@ -1,4 +1,16 @@
 <?php
+/*
+ * This file is part of Fork CMS.
+*
+* For the full copyright and license information, please view the license
+* file that was distributed with this source code.
+*/
+
+/**
+ * This is the categories widget
+ * @author ken.depelchin@netlash.com
+ */
+
 class FrontendLunchWidgetCategories extends FrontendBaseWidget
 {
 	public function execute()
@@ -10,7 +22,6 @@ class FrontendLunchWidgetCategories extends FrontendBaseWidget
 
 	private function parse()
 	{
-		// assign categories
 		$categories = FrontendLunchModel::getAllCategories();
 
 		if (!empty($categories))

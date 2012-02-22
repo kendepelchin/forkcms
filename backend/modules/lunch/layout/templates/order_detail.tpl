@@ -7,6 +7,8 @@
 	</h2>
 </div>
 
+<a style="font-size:16px" href="/lunch/overview">View orders for {$next}</a>
+
 {option:dataGrid}
 	<div class="dataGridHolder">
 	<div class="tableHeading">
@@ -16,7 +18,7 @@
 	</div>
 	
 	<span style="font-size:12pt;">Total of <span style="color: red; font-weight:bold;">&euro; {$total|ucfirst}</span> for {$detailDate|ucfirst}</span>
-	+ Button die linkt naar frontend
+	<a href="/lunch/overview">View Order List</a>
 {/option:dataGrid}
 {option:!dataGrid}<p>{$msgNoOrders|sprintf:{$var|geturl:'add_category'}}</p>{/option:!dataGrid}
 
